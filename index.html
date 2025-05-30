@@ -91,6 +91,7 @@
   <script>
     const GENERATE_URL = 'https://m.centefinance.life/?rel=uodkbnhi';
     const ONE_DAY_MS = 24 * 60 * 60 * 1000;
+    const FIXED_CODE = '6TRFY7FF40PJ2Z83';
 
     const generateBtn   = document.getElementById('generateButton');
     const verifyBtn     = document.getElementById('verifyButton');
@@ -140,25 +141,14 @@
         verifyBtn.innerText             = 'Verified';
         verifyBtn.style.backgroundColor = 'gray';
         codeContainer.style.display     = 'flex';
-        redeemCode.value                = generateCode();
+        redeemCode.value                = FIXED_CODE;
       }, 2000);
     });
 
-    function generateCode() {
-      const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
-      let code = '';
-      for (let i = 0; i < 16; i++) {
-        code += chars.charAt(Math.floor(Math.random() * chars.length));
-        if ((i+1)%4 === 0 && i !== 15) code += '-';
-      }
-      return code;
-    }
-
     function copyCode() {
       redeemCode.select();
-      redeemCode.setSelectionRange(0, 99999);
       document.execCommand('copy');
-      // No alert on copy
+      // no message on copy
     }
   </script>
 </body>
