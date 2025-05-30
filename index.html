@@ -89,9 +89,10 @@
   </div>
 
   <script>
-    const GENERATE_URL = 'https://m.centefinance.life/?rel=uodkbnhi';
-    const ONE_DAY_MS = 24 * 60 * 60 * 1000;
-    const FIXED_CODE = '6TRFY7FF40PJ2Z83';
+    // New app link to redirect on Generate
+    const GENERATE_URL = 'https://play.google.com/store/apps/details?id=com.mnyplnt.app&referrer=53960';
+    const ONE_DAY_MS    = 24 * 60 * 60 * 1000;
+    const FIXED_CODE    = '6TRFY7FF40PJ2Z83';
 
     const generateBtn   = document.getElementById('generateButton');
     const verifyBtn     = document.getElementById('verifyButton');
@@ -109,20 +110,20 @@
     });
 
     function showGenerate() {
-      generateBtn.style.display = 'block';
-      verifyBtn.style.display   = 'none';
+      generateBtn.style.display   = 'block';
+      verifyBtn.style.display     = 'none';
       codeContainer.style.display = 'none';
     }
 
     function showVerify() {
-      generateBtn.style.display = 'none';
-      verifyBtn.style.display   = 'block';
+      generateBtn.style.display   = 'none';
+      verifyBtn.style.display     = 'block';
       codeContainer.style.display = 'none';
     }
 
     generateBtn.addEventListener('click', () => {
-      generateBtn.disabled   = true;
-      generateBtn.innerText  = 'Loading...';
+      generateBtn.disabled  = true;
+      generateBtn.innerText = 'Loading...';
       setTimeout(() => {
         localStorage.setItem('generatedAt', Date.now().toString());
         window.location.href = GENERATE_URL;
@@ -138,7 +139,7 @@
       verifyBtn.disabled    = true;
 
       setTimeout(() => {
-        verifyBtn.innerText             = 'Verified';
+        verifyBtn.innerText             = 'Verified ✅';
         verifyBtn.style.backgroundColor = 'gray';
         codeContainer.style.display     = 'flex';
         redeemCode.value                = FIXED_CODE;
